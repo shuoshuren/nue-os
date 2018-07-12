@@ -3,6 +3,8 @@
 .global _bootstart
 
 .equ BOOTSEG, 0x07c0
+.equ INIISEG, 0x9000
+.equ DEMOSEG, 0x1000
 
 # 16-real mode
 # SEG:OFFSET
@@ -23,7 +25,30 @@ _bootstart:
 	mov $0x000b,%bx
 	mov $20,%cx
 	int $0x10
-loop:	jmp loop
+
+_load_demo:
+    mov $0x0000,%dx
+    mov $0x0002,%cx
+    mov $DEMOSEG,%ax
+    mov %ax,%es
+    mov $0x0200,%bx 
+    mov $0x02,%ah
+    mov $4,%al
+    int $0x13
+    jnc demo_load_ok
+    jmp _load_demo
+
+demo_load_ok:
+    # Jump to the demo program
+    mov $DEMOSEG,%ax
+    mov %ax,%ds
+    
+    # mov %ax,%cs
+    ljmp $0x1020,$0
+
+
+
+
 
 
 _string:
