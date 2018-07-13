@@ -37,6 +37,12 @@ _start:
     mov $0x88 ,%ah
     int $0x15
     mov %ax,%ds:2
+    
+    # 显卡显示模式
+    mov $0x0f,%ah
+    int $0x10
+    mov %bx,%ds:4
+    mov %ax,%ds:6
 
     # VGA 显示模式
     mov $0x12,%ah
@@ -84,10 +90,11 @@ no_disk1:
 
 is_disk1:
     # prepare to enter protect mode
-    cli
+    cli     # 关中断
 
     # move system image to 0x000:0x0000
     mov $0x0000,%ax
+    cld
 
 do_move:
     # rep movsw ds:si->es:di
@@ -111,13 +118,13 @@ end_move:
     mov %ax,%ds
     lgdt gdt_48
     lidt idt_48
+    
 
-
-enable_a20:
+#  enable_a20:
     # 开启A20 line
-    in $0x92,%al
-    or $0x02,%al
-    out %al,$0x92
+    inb $0x92,%al
+    orb $0b00000010,%al
+    outb %al,$0x92
     
     # CR0 protect enabled = 1
     mov %cr0,%eax
