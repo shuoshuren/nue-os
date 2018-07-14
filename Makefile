@@ -36,4 +36,4 @@ binary.o:binary.S
 
 
 clean:
-	- rm -f *.o bootsect setup Image
+	- rm -f *.o bootsect setup Image binary

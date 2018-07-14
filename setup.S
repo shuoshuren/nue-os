@@ -21,6 +21,9 @@ show_text:
     mov $msg,%bp
     int $0x10
 
+loop_forever:
+    jmp loop_forever
+
     ljmp $SETUPSEG,$_start
 
 
