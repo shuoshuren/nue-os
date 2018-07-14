@@ -5,8 +5,8 @@ all: Image
 run-qemu:Image
 	- @qemu-system-x86_64 -boot a -fda Image
 
-bootsect.o:bootsect.S
-	- @as --32 bootsect.S -o bootsect.o
+bootsect.o:bootsect.s
+	- @as --32 bootsect.s -o bootsect.o
 
 bootsect: bootsect.o ld-bootsect.ld
 	- @ld -T ld-bootsect.ld bootsect.o -o bootsect
@@ -26,11 +26,11 @@ binary:binary.o
 	- @ld -T ld-bootsect.ld binary.o -o binary
 	- @objcopy -O binary -j .text binary
 
-setup.o:setup.S
-	- @as --32 setup.S -o setup.o
+setup.o:setup.s
+	- @as --32 setup.s -o setup.o
 
-binary.o:binary.S
-	- @as --32 binary.S -o binary.o
+binary.o:binary.s
+	- @as --32 binary.s -o binary.o
 
 
 

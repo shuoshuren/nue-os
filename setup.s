@@ -5,7 +5,7 @@
 .equ SETUPSEG,0x9020
 .equ LEN,54
 .equ INITSEG,0x9000
-
+.equ SYSSEG,0x1000
 
 
 show_text:
@@ -14,15 +14,12 @@ show_text:
     mov $0x03,%ah
     xor %bh,%bh
     int $0x10
-
     mov $0x000a,%bx
     mov $0x1301,%ax
     mov $LEN,%cx
     mov $msg,%bp
     int $0x10
 
-loop_forever:
-    jmp loop_forever
 
     ljmp $SETUPSEG,$_start
 
@@ -37,7 +34,7 @@ _start:
     mov %dx,%ds:0
 
     # 保存扩展内存大小 0x15 88
-    mov $0x88 ,%ah
+    mov $0x88, %ah
     int $0x15
     mov %ax,%ds:2
     
@@ -120,10 +117,10 @@ end_move:
     mov $SETUPSEG,%ax
     mov %ax,%ds
     lgdt gdt_48
-    lidt idt_48
+   # lidt idt_48
     
 
-#  enable_a20:
+enable_a20:
     # 开启A20 line
     inb $0x92,%al
     orb $0b00000010,%al
@@ -160,7 +157,7 @@ end_move:
 # GDT Descriptor
 gdt_48:
     .word 0x800
-    .word 512+gdt,0x9
+    .word 512+gdt,0x9 # this give the gdt base address: 0x90200
 
 # Global Descriptor Table
 gdt:
@@ -176,16 +173,11 @@ gdt:
     .word 0x9200    # 1 00 1 0010 0000 0000
     .word 0x00C0    # 0000 0000 1 1 00 0000
 
-idt_48:
-    .word 0
-    .word 0,0
-
-idt:
     
 
 msg:
     .byte 13,10
-    .ascii "You've sucessfully load the floopy data into RAM"
+    .ascii "You've sucessfully load the floppy data into RAM"
     .byte 13,10,13,10
 
 
